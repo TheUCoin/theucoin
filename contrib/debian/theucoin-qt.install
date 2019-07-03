@@ -1,0 +1,6 @@
+usr/local/bin/theucoin-qt usr/bin
+share/pixmaps/tucoin32.xpm usr/share/pixmaps
+share/pixmaps/tucoin16.xpm usr/share/pixmaps
+share/pixmaps/tucoin128.png usr/share/pixmaps
+debian/theucoin-qt.desktop usr/share/applications
+debian/theucoin-qt.protocol usr/share/kde4/services/

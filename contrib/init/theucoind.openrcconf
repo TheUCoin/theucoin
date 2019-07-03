@@ -1,0 +1,26 @@
+# /etc/conf.d/theucoind: config file for /etc/init.d/theucoind
+
+# Config file location
+#TUCOIND_CONFIGFILE="/etc/theucoin/theucoin.conf"
+
+# What directory to write pidfile to?  (created and owned by $TUCOIND_USER)
+#TUCOIND_PIDDIR="/var/run/theucoind"
+
+# What filename to give the pidfile
+#TUCOIND_PIDFILE="${TUCOIND_PIDDIR}/theucoind.pid"
+
+# Where to write theucoind data (be mindful that the blockchain is large)
+#TUCOIND_DATADIR="/var/lib/theucoind"
+
+# User and group to own theucoind process
+#TUCOIND_USER="theucoin"
+#TUCOIND_GROUP="theucoin"
+
+# Path to theucoind executable
+#TUCOIND_BIN="/usr/bin/theucoind"
+
+# Nice value to run theucoind under
+#TUCOIND_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+TUCOIND_OPTS=""

@@ -1,0 +1,11 @@
+[Protocol]
+exec=theucoin-qt '%u'
+protocol=theucoin
+input=none
+output=none
+helper=true
+listing=
+reading=false
+writing=false
+makedir=false
+deleting=false

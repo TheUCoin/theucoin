@@ -1,0 +1,26 @@
+[Unit]
+Description=TheUCoin's distributed currency daemon
+After=network.target
+
+[Service]
+User=theucoin
+Group=theucoin
+
+Type=forking
+PIDFile=/var/lib/theucoind/theucoind.pid
+
+ExecStart=/usr/bin/theucoind -daemon -pid=/var/lib/theucoind/theucoind.pid \
+          -conf=/etc/theucoin/theucoin.conf -datadir=/var/lib/theucoind
+
+ExecStop=-/usr/bin/theucoin-cli -conf=/etc/theucoin/theucoin.conf \
+         -datadir=/var/lib/theucoind stop
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

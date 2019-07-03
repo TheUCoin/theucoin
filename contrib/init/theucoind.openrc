@@ -1,0 +1,86 @@
+#!/sbin/runscript
+
+# backward compatibility for existing gentoo layout
+#
+if [ -d "/var/lib/theucoin/.theucoin" ]; then
+	TUCOIND_DEFAULT_DATADIR="/var/lib/theucoin/.theucoin"
+else
+	TUCOIND_DEFAULT_DATADIR="/var/lib/theucoind"
+fi
+
+TUCOIND_CONFIGFILE=${TUCOIND_CONFIGFILE:-/etc/theucoin/theucoin.conf}
+TUCOIND_PIDDIR=${TUCOIND_PIDDIR:-/var/run/theucoind}
+TUCOIND_PIDFILE=${TUCOIND_PIDFILE:-${TUCOIND_PIDDIR}/theucoind.pid}
+TUCOIND_DATADIR=${TUCOIND_DATADIR:-${TUCOIND_DEFAULT_DATADIR}}
+TUCOIND_USER=${TUCOIND_USER:-theucoin}
+TUCOIND_GROUP=${TUCOIND_GROUP:-theucoin}
+TUCOIND_BIN=${TUCOIND_BIN:-/usr/bin/theucoind}
+
+name="TheUCoin Core Daemon"
+description="TheUCoin crypto-currency p2p network daemon"
+
+command="/usr/bin/theucoind"
+command_args="-pid=\"${TUCOIND_PIDFILE}\" \
+		-conf=\"${TUCOIND_CONFIGFILE}\" \
+		-datadir=\"${TUCOIND_DATADIR}\" \
+		-daemon \
+		${TUCOIND_OPTS}"
+
+required_files="${TUCOIND_CONFIGFILE}"
+start_stop_daemon_args="-u ${TUCOIND_USER} \
+			-N ${TUCOIND_NICE:-0} -w 2000"
+pidfile="${TUCOIND_PIDFILE}"
+retry=60
+
+depend() {
+	need localmount net
+}
+
+# verify
+# 1) that the datadir exists and is writable (or create it)
+# 2) that a directory for the pid exists and is writable
+# 3) ownership and permissions on the config file
+start_pre() {
+	checkpath \
+	-d \
+	--mode 0750 \
+	--owner "${TUCOIND_USER}:${TUCOIND_GROUP}" \
+	"${TUCOIND_DATADIR}"
+
+	checkpath \
+	-d \
+	--mode 0755 \
+	--owner "${TUCOIND_USER}:${TUCOIND_GROUP}" \
+	"${TUCOIND_PIDDIR}"
+
+	checkpath -f \
+	-o ${TUCOIND_USER}:${TUCOIND_GROUP} \
+	-m 0660 \
+	${TUCOIND_CONFIGFILE}
+
+	checkconfig || return 1
+}
+
+checkconfig()
+{
+	if ! grep -qs '^rpcpassword=' "${TUCOIND_CONFIGFILE}" ; then
+		eerror ""
+		eerror "ERROR: You must set a secure rpcpassword to run theucoind."
+		eerror "The setting must appear in ${TUCOIND_CONFIGFILE}"
+		eerror ""
+		eerror "This password is security critical to securing wallets "
+		eerror "and must not be the same as the rpcuser setting."
+		eerror "You can generate a suitable random password using the following"
+		eerror "command from the shell:"
+		eerror ""
+		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
+		eerror ""
+		eerror "It is also recommended that you also set alertnotify so you are "
+		eerror "notified of problems:"
+		eerror ""
+		eerror "ie: alertnotify=echo %%s | mail -s \"TheUCoin Alert\"" \
+			"admin@foo.com"
+		eerror ""
+		return 1
+	fi
+}

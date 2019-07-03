@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=TheUCoin
+Comment=TheUCoin P2P Cryptocurrency
+Exec=theucoin-qt %u
+Terminal=false
+Type=Application
+Icon=theucoin128
+MimeType=x-scheme-handler/theucoin;
+Categories=Office;Finance;
+Name[en_US]=theucoin-qt.desktop
